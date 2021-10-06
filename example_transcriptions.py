@@ -1,3 +1,4 @@
+# Using rocrate#fix_data_entity pip install git+https://github.com/ResearchObject/ro-crate-py.git#fix_data_entity
 from rocrate.rocrate import ROCrate
 import re
 import urllib.request
