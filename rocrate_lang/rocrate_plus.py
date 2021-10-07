@@ -1,23 +1,18 @@
 import collections
+
 from rocrate.rocrate import ROCrate
+from rocrate.utils import *
 
 
 class ROCratePlus(ROCrate):
     """
-    Extending RoCrate with more things!
+    Extending ROCrate with more things!
     """
 
-    def __init__(self, crate_path):
-        super().__init__(crate_path)
-
-    def as_list(self, value):
-        # Normalise a value to be an array
-        if not value:
-            return []
-        elif not isinstance(value, list):
-            return [value]
-        else:
-            return value
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    # def __init__(self, crate_path):
+    #     super().__init__(crate_path)
 
     def resolve(self, items, pathArray, subgraph=None):
         """
@@ -40,28 +35,30 @@ class ROCratePlus(ROCrate):
             null, or an array of items
         """
         cd = collections.deque(pathArray)
-        pathArray = cd.popleft()
-        p = pathArray[0]
+        p = cd.popleft()
+        pathArray = cd
         resolvedArray = []
         resolvedIds = {}
-        items = self.as_list(items)
+        items = as_list(items)
         for item in items:
-            if p["@reverse"] and item["@reverse"]:
+            if '@reverse' in p and '@reverse' in item:
                 item = item["@reverse"]
-            if item[p.property]:
-                for val in self.as_list(item[p.property]):
-                    if val["@id"] and self.crate.dereferece(val["@id"]):
+            if p['property'] in item:
+                for val in as_list(item[p['property']]):
+                    value = super().dereference(val["@id"])
+                    if '@id' in val and any(value.as_jsonld()):
                         id = val["@id"]
-                        if not resolvedIds[id]:
-                            potentialItem = self.crate.dereferece(val["@id"])
-                        if p.includes:
+                        if id not in resolvedIds:
+                            potentialItem = super().dereference(val["@id"])
+                            potentialItem = potentialItem.as_jsonld()
+                        if 'includes' in p:
                             for includes in p.includes:
                                 inc = includes.keys()
-                                if self.as_list(potentialItem[inc]).includes(p.includes[inc]):
+                                if as_list(potentialItem[inc]).includes(p.includes[inc]):
                                     resolvedArray.append(potentialItem)
                                     resolvedIds[id] = 1
-                        elif p.matchFn:
-                            if p.matchFn(potentialItem):
+                        elif 'matchFn' in p:
+                            if potentialItem in p['matchFn']:
                                 resolvedArray.append(potentialItem)
                                 resolvedIds[id] = 1
                         else:

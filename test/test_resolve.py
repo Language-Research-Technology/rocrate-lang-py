@@ -19,5 +19,5 @@ NCONVICTIONS = 58
 def test_multiple_links():
     pItem = crate.dereference(PERSONID)
     item = pItem.as_jsonld()
-    sentences = crate.resolve(item, [{property: "conviction"}])
+    sentences = crate.resolve(item, [{'property': "conviction"}])
     assert len(sentences) == NCONVICTIONS
