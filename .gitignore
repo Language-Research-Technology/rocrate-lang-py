@@ -1,5 +1,5 @@
 test/test-data/*
 !test/test-data/.gitkeep
-
+!test/test-data/rocrate_test_f2f
 
 .idea

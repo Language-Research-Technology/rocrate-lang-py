@@ -5,8 +5,8 @@ from rocrate_lang import utils
 
 def main():
     BASE_URL = 'file://'
-    CRATE_PATH = '/Users/moises/cloudstor/Shared/atap-repo-misc/'
-    REPO_DATASET_ID = 'farms_to_freeways/'
+    CRATE_PATH = '/Users/moises/cloudstor/Shared/atap-repo-misc'
+    REPO_DATASET_ID = 'farms_to_freeways'
 
     print(f'Loading:  {CRATE_PATH + REPO_DATASET_ID}')
     repo_url = BASE_URL + CRATE_PATH
