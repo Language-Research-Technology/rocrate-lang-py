@@ -2,10 +2,11 @@
 
 Work in Progress
 
-## ro-crate-py
+Notes: ro-crate-py using specific branch see requirements.txt file 
 
-Branch version used: `fix_data_entity` from github.com:ResearchObject/ro-crate-py.git
+
+## Install
 
 ```shell
-pip install git+https://github.com/ResearchObject/ro-crate-py.git#fix_data_entity
+pip install .
 ```
