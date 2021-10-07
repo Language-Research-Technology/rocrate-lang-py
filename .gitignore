@@ -3,3 +3,4 @@ test/test-data/*
 !test/test-data/rocrate_test_f2f
 
 .idea
+.DS_Store
