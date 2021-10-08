@@ -112,3 +112,40 @@ def test_resolve_with_matchFn_2():
         'matchFn': lambda item: re.search(r"anzsrc-seo", item["@id"])
     }])
     assert len(seo_codes) == COUNT_SEOS
+
+
+# Collect items when resolving links
+global crate_finals
+global subgraph
+
+
+# int generates a subgraph of all items traversed when resolving
+def test_subgraph():
+    pItem = crate.dereference(PERSONID)
+    item = pItem.as_jsonld()
+    global crate_finals
+    global subgraph
+    [crate_finals, subgraph] = crate.resolveAll(item, [{'property': "conviction"}, {'property': "location"}]);
+
+    assert any(crate_finals and subgraph)
+
+
+# the subgraph should contain all of the convictions it traversed,
+# and all of the locations, and nothing else
+def test_subgraph_contains_convictions_and_locations():
+    pItem = crate.dereference(PERSONID)
+    item = pItem.as_jsonld()
+    convictions = crate.resolve(item, [{'property': "conviction"}])
+    courts = crate.resolve(item, [{'property': "conviction"}, {'property': "location"}])
+
+    c_ids = map(lambda l: l['@id'], convictions)
+    list_c_ids = list(c_ids)
+    cl_ids = map(lambda l: l['@id'], courts)
+    list_cl_ids = list(cl_ids)
+
+    sg_ids = map(lambda l: l['@id'], subgraph)
+    list_sg_ids = list(sg_ids)
+
+    expect_ids = list_c_ids + list_cl_ids
+
+    assert expect_ids == list_sg_ids

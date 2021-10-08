@@ -11,7 +11,7 @@ class ROCratePlus(ROCrate):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def resolve(self, items, pathArray, subgraph=None):
+    def resolve(self, items, pathArray, subgraph=False):
         """
         :param items:
             A JSON-LD item or array of [item]
@@ -73,9 +73,9 @@ class ROCratePlus(ROCrate):
 
     def _store_in_subgraph(self, resolvedArray):
         for item in resolvedArray:
-            if not self._subgraph_by_id[item['@id']]:
+            if item['@id'] not in self._subgraph_by_id:
                 self._subgraph_by_id[item['@id']] = 1
-                self._subgraph.push(item)
+                self._subgraph.append(item)
 
     def resolveAll(self, items, pathArray):
         """
