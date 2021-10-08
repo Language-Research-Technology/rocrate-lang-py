@@ -1,8 +1,6 @@
-import collections
-
 from rocrate.rocrate import ROCrate
 from rocrate.utils import *
-
+from collections import deque
 
 class ROCratePlus(ROCrate):
     """
@@ -11,8 +9,6 @@ class ROCratePlus(ROCrate):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    # def __init__(self, crate_path):
-    #     super().__init__(crate_path)
 
     def resolve(self, items, pathArray, subgraph=None):
         """
@@ -34,7 +30,7 @@ class ROCratePlus(ROCrate):
         :return:
             null, or an array of items
         """
-        cd = collections.deque(pathArray)
+        cd = deque(pathArray)
         p = cd.popleft()
         pathArray = cd
         resolvedArray = []
@@ -51,20 +47,19 @@ class ROCratePlus(ROCrate):
                         if id not in resolvedIds:
                             potentialItem = super().dereference(val["@id"])
                             potentialItem = potentialItem.as_jsonld()
-                        if 'includes' in p:
-                            for includes in p.includes:
-                                inc = includes.keys()
-                                if as_list(potentialItem[inc]).includes(p.includes[inc]):
+                            if 'includes' in p:
+                                for includes in p.includes:
+                                    inc = includes.keys()
+                                    if as_list(potentialItem[inc]).includes(p.includes[inc]):
+                                        resolvedArray.append(potentialItem)
+                                        resolvedIds[id] = 1
+                            elif 'matchFn' in p:
+                                if potentialItem in p['matchFn']:
                                     resolvedArray.append(potentialItem)
                                     resolvedIds[id] = 1
-                        elif 'matchFn' in p:
-                            if potentialItem in p['matchFn']:
+                            else:
                                 resolvedArray.append(potentialItem)
                                 resolvedIds[id] = 1
-                        else:
-                            resolvedArray.append(potentialItem)
-                            resolvedIds[id] = 1
-
         if len(resolvedArray) == 0:
             return None
         elif len(pathArray) > 0:
