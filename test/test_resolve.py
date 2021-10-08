@@ -42,7 +42,6 @@ def test_resolve_sentences():
 
 
 def test_resolve_multiple_properties():
-
     pItem = crate.dereference(PERSONID)
     item = pItem.as_jsonld()
     global conv_locations
@@ -59,5 +58,35 @@ def test_resolved_id_should_be_in_location():
     for s in sentences:
         location_id = s['location']['@id'] or None
         if location_id not in list_locs_ids:
+            error = True
+    assert not error
+
+
+# Conditional resolution with include
+
+crate2_id = 'resolve_crate_include'
+
+crate2_base = path.join(abs_path, 'test-data')
+crate2_path = path.join(crate2_base, crate2_id)
+crate2 = ROCratePlus(crate2_path)
+
+global includers
+
+
+# can resolve items of a particular type, via include
+def test_resolve_type_via_include():
+    root = crate2.root_dataset
+    global includers
+    includers = crate2.resolve(root.as_jsonld(), [{
+        'property': 'hasPart',
+        'includes': {'@type': 'ImageObject'}
+    }])
+    assert len(includers) == COUNT_INCLUDERS
+
+
+def test_verify_includers():
+    error = False
+    for i in list(includers):
+        if not i['@type'] == 'ImageObject':
             error = True
     assert not error

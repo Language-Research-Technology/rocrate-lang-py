@@ -48,9 +48,8 @@ class ROCratePlus(ROCrate):
                             potentialItem = super().dereference(val["@id"])
                             potentialItem = potentialItem.as_jsonld()
                             if 'includes' in p:
-                                for includes in p.includes:
-                                    inc = includes.keys()
-                                    if as_list(potentialItem[inc]).includes(p.includes[inc]):
+                                for key in p['includes']:
+                                    if p['includes'][key] in as_list(potentialItem[key]):
                                         resolvedArray.append(potentialItem)
                                         resolvedIds[id] = 1
                             elif 'matchFn' in p:
