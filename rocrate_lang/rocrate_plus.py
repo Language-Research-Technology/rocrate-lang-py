@@ -2,6 +2,7 @@ from rocrate.rocrate import ROCrate
 from rocrate.utils import *
 from collections import deque
 
+
 class ROCratePlus(ROCrate):
     """
     Extending ROCrate with more things!
@@ -53,7 +54,7 @@ class ROCratePlus(ROCrate):
                                         resolvedArray.append(potentialItem)
                                         resolvedIds[id] = 1
                             elif 'matchFn' in p:
-                                if potentialItem in p['matchFn']:
+                                if not p['matchFn'](potentialItem) is None:
                                     resolvedArray.append(potentialItem)
                                     resolvedIds[id] = 1
                             else:

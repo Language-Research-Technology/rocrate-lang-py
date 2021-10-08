@@ -1,5 +1,6 @@
 from rocrate_lang.rocrate_plus import ROCratePlus
 from os import path
+import re
 
 abs_path = path.abspath(path.dirname(__file__))
 transcriptions = []
@@ -29,6 +30,7 @@ COUNT_INCLUDERS = 2
 
 global conv_locations
 global sentences
+
 
 # Resolving linked items with multiple values
 
@@ -90,3 +92,23 @@ def test_verify_includers():
         if not i['@type'] == 'ImageObject':
             error = True
     assert not error
+
+
+# Conditional resolution with matchFn
+# can resolve items which match a regexp
+def test_resolve_with_matchFn():
+    root = crate2.root_dataset
+    for_codes = crate2.resolve(root.as_jsonld(), [{
+        'property': 'about',
+        'matchFn': lambda item: re.search(r"anzsrc-for", item["@id"])
+    }])
+    assert len(for_codes) == COUNT_FORS
+
+
+def test_resolve_with_matchFn_2():
+    root = crate2.root_dataset
+    seo_codes = crate2.resolve(root.as_jsonld(), [{
+        'property': 'about',
+        'matchFn': lambda item: re.search(r"anzsrc-seo", item["@id"])
+    }])
+    assert len(seo_codes) == COUNT_SEOS
