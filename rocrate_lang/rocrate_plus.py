@@ -1,6 +1,8 @@
 from rocrate.rocrate import ROCrate
 from rocrate.utils import *
 from collections import deque
+from rocrate.model import entity
+import copy
 
 
 class ROCratePlus(ROCrate):
@@ -10,6 +12,10 @@ class ROCratePlus(ROCrate):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # TODO: add this defaults to a file like ro-crate-js
+        back_back_links = []
+        self.defaults = dict(back_links={}, back_back_links=set(back_back_links))
+        self.reverse_entities = []
 
     def resolve(self, items, pathArray, subgraph=False):
         """
@@ -87,3 +93,74 @@ class ROCratePlus(ROCrate):
         self._subgraph = []
         finals = self.resolve(items, pathArray, True)
         return [finals, self._subgraph]
+
+    def backLinkItem(self, item):
+
+        for key in list(item):
+            if key != "@id" and key != "@reverse":
+                for part in as_list(item[key]):
+                    target = self.referenceToItem(part)
+                    if key not in self.defaults['back_links']:
+                        back_link = None
+                    else:
+                        back_link = self.defaults['back_links'][key]
+                    # Dealing with one of the known structural properties
+                    if target and back_link:
+                        if not target[back_link]:
+                            target[back_link] = [{"@id": item["@id"]}]
+                        else:
+                            as_list(target[back_link]).append({"@id": item["@id"]})
+
+                    elif not back_link and target is not None and not key in self.defaults['back_back_links']:
+                        # We are linking to something
+                        # print(f"Doing a back link", key + ': ' + target['@id'] + ':' + item['@id'])
+                        if '@reverse' not in target:
+                            target["@reverse"] = {}
+                        if key not in target["@reverse"]:
+                            target["@reverse"][key] = []
+
+                        got_this_reverse_already = False
+                        for r in target["@reverse"][key]:
+                            if r["@id"] == item["@id"]:
+                                got_this_reverse_already = True
+
+                        if not got_this_reverse_already:
+                            # console.log("Back linking", key)
+                            target["@reverse"][key].append({"@id": item["@id"]})
+                            # print(target)
+
+    def addBackLinks(self):
+        json = self.root_dataset.as_jsonld()
+        self.backLinkItem(json)
+        for item in self.default_entities:
+            json = item.as_jsonld()
+            self.backLinkItem(json)
+        for item in self.contextual_entities:
+            json = item.as_jsonld()
+            self.backLinkItem(json)
+        for item in self.data_entities:
+            json = item.as_jsonld()
+            self.backLinkItem(json)
+
+    # See if a value (could be a string or an object) is a reference to something
+    def referenceToItem(self, value):
+        # Check if node is a reference to something else
+        # If it is, return the something else
+        if type(value) == dict and value["@id"]:
+            deref = super().dereference(value["@id"])
+            if deref is not None:
+                return deref.as_jsonld()
+            else:
+                return None
+        else:
+            return None
+
+    def update_reverse_entities(self, item_id, obj):
+        for idx, entity_obj in enumerate(self.reverse_entities):
+            if entity_obj.id == item_id:
+                e = vars(entity_obj)
+                entity_dict = {**e, **obj}
+                del entity_dict['crate']
+                del entity_dict['_jsonld']
+                ce = entity(entity_obj.crate, item_id, entity_dict)
+                self.contextual_entities[idx] = ce
