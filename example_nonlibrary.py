@@ -35,12 +35,12 @@ for entity in metadata[GRAPH]:
         primary_object_type = [e for e in my_type if e not in [PRIMARY_OBJECT]][0]
         primary_object_types.add(primary_object_type)
 
-    if OBJECT_LINKAGE in entity:
-        for x in entity[OBJECT_LINKAGE]:
-            filename = x[ID]
-            suffix = filename.split('.')[-1]
-            if suffix not in linked_objects:
-                linked_objects.add((suffix, primary_object_type))
+        if OBJECT_LINKAGE in entity:
+            for x in entity[OBJECT_LINKAGE]:
+                filename = x[ID]
+                suffix = filename.split('.')[-1]
+                if suffix not in linked_objects:
+                    linked_objects.add((suffix, primary_object_type))
 
 
 flat_types = list(itertools.chain.from_iterable(types))
