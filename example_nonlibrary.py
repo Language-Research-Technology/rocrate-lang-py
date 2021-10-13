@@ -75,7 +75,7 @@ for entity in metadata[GRAPH]:
                 if t not in all_data:
                     all_data[t] = df
                 else:
-                    all_data[t].append(df)
+                    all_data[t] = pd.concat([all_data[t], df])
 
 new = pd.merge(left=all_data['TextDialogue'], right=all_data[hypernym['speaker']], left_on='speaker.@id', right_on='@id',
                suffixes=('_artefact', '_speaker'), how='inner')
