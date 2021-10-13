@@ -77,11 +77,11 @@ for entity in metadata[GRAPH]:
                 else:
                     all_data[t].append(df)
 
-for e in all_data:
-    ...
-    # print(e)
-    # print(all_data[e].keys())
-
-new = pd.merge(left=all_data['TextDialogue'], right=all_data[hypernym['speaker']], left_on='speaker.@id', right_on='@id', how='inner')
+new = pd.merge(left=all_data['TextDialogue'], right=all_data[hypernym['speaker']], left_on='speaker.@id', right_on='@id',
+               suffixes=('_artefact', '_speaker'), how='inner')
+print(new.loc[0]['@type_artefact'])
+print(new.loc[0]['@type_speaker'])
 print(new.loc[0])
+
+print(new.keys())
 
