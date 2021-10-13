@@ -15,7 +15,6 @@ class ROCratePlus(ROCrate):
         # TODO: add this defaults to a file like ro-crate-js
         back_back_links = []
         self.defaults = dict(back_links={}, back_back_links=set(back_back_links))
-        self.reverse_entities = []
 
     def resolve(self, items, pathArray, subgraph=False):
         """
@@ -154,13 +153,3 @@ class ROCratePlus(ROCrate):
                 return None
         else:
             return None
-
-    def update_reverse_entities(self, item_id, obj):
-        for idx, entity_obj in enumerate(self.reverse_entities):
-            if entity_obj.id == item_id:
-                e = vars(entity_obj)
-                entity_dict = {**e, **obj}
-                del entity_dict['crate']
-                del entity_dict['_jsonld']
-                ce = entity(entity_obj.crate, item_id, entity_dict)
-                self.contextual_entities[idx] = ce
