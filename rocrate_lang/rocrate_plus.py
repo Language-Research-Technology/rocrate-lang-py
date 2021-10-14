@@ -128,17 +128,8 @@ class ROCratePlus(ROCrate):
                             # print(target)
 
     def addBackLinks(self):
-        json = self.root_dataset.as_jsonld()
-        self.backLinkItem(json)
-        for item in self.default_entities:
-            json = item.as_jsonld()
-            self.backLinkItem(json)
-        for item in self.contextual_entities:
-            json = item.as_jsonld()
-            self.backLinkItem(json)
-        for item in self.data_entities:
-            json = item.as_jsonld()
-            self.backLinkItem(json)
+        for item in super().get_entities():
+            self.backLinkItem(item.as_jsonld())
 
     # See if a value (could be a string or an object) is a reference to something
     def referenceToItem(self, value):
