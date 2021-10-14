@@ -125,7 +125,7 @@ def test_subgraph():
     item = pItem.as_jsonld()
     global crate_finals
     global subgraph
-    [crate_finals, subgraph] = crate.resolveAll(item, [{'property': "conviction"}, {'property': "location"}]);
+    [crate_finals, subgraph] = crate.resolveAll(item, [{'property': "conviction"}, {'property': "location"}])
 
     assert any(crate_finals and subgraph)
 

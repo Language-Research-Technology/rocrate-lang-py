@@ -5,8 +5,8 @@ import pandas as pd
 BASE_URL = 'file://'
 
 # Farms To Freeways
-F2F_CRATE_PATH = '/PATH/TO/ROCRATE/'
-F2F_DATASET_ID = 'farms_to_freeways/'
+F2F_CRATE_PATH = 'test/test-data/'
+F2F_DATASET_ID = 'farms_to_freeways_test_rocrate/'
 
 # KEYWORDS from RO-CRATE
 OBJECT_LINKAGE = 'hasFile'

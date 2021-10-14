@@ -1,8 +1,7 @@
 from rocrate.rocrate import ROCrate
-from rocrate.utils import *
+from rocrate.utils import as_list, is_url
 from collections import deque
-from rocrate.model import entity
-import copy
+from .utils import *
 
 
 class ROCratePlus(ROCrate):
@@ -15,6 +14,8 @@ class ROCratePlus(ROCrate):
         # TODO: add this defaults to a file like ro-crate-js
         back_back_links = []
         self.defaults = dict(back_links={}, back_back_links=set(back_back_links))
+        self._subgraph_by_id = {}
+        self._subgraph = []
 
     def resolve(self, items, pathArray, subgraph=False):
         """
@@ -47,12 +48,11 @@ class ROCratePlus(ROCrate):
                 item = item["@reverse"]
             if p['property'] in item:
                 for val in as_list(item[p['property']]):
-                    value = super().dereference(val["@id"])
-                    if '@id' in val and any(value.as_jsonld()):
+                    value = self.referenceToItem(val)
+                    if '@id' in val and any(value):
                         id = val["@id"]
                         if id not in resolvedIds:
-                            potentialItem = super().dereference(val["@id"])
-                            potentialItem = potentialItem.as_jsonld()
+                            potentialItem = self.referenceToItem(val)
                             if 'includes' in p:
                                 for key in p['includes']:
                                     if p['includes'][key] in as_list(potentialItem[key]):
@@ -145,10 +145,21 @@ class ROCratePlus(ROCrate):
     def referenceToItem(self, value):
         # Check if node is a reference to something else
         # If it is, return the something else
-        if type(value) == dict and value["@id"]:
-            deref = super().dereference(value["@id"])
-            if deref is not None:
-                return deref.as_jsonld()
+        if type(value).__name__ == 'dict':
+            if '@id' in value:
+                # correct_id = prepend_hash()
+                _id = value["@id"]
+                if is_url(_id):
+                    _id = _id
+                elif _id.startswith('#'):
+                    _id = _id
+                else:
+                    _id = '#' + _id
+                deref = super().dereference(_id)
+                if deref is not None:
+                    return deref.as_jsonld()
+                else:
+                    return None
             else:
                 return None
         else:

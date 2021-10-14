@@ -1,2 +1,3 @@
 rocrate @ git+https://github.com/ResearchObject/ro-crate-py.git#fix_data_entity
 pytest
+pandas
