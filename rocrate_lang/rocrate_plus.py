@@ -1,7 +1,6 @@
 from rocrate.rocrate import ROCrate
 from rocrate.utils import as_list, is_url
 from collections import deque
-from .utils import *
 
 
 class ROCratePlus(ROCrate):
@@ -147,7 +146,6 @@ class ROCratePlus(ROCrate):
         # If it is, return the something else
         if type(value).__name__ == 'dict':
             if '@id' in value:
-                # correct_id = prepend_hash()
                 _id = value["@id"]
                 if is_url(_id):
                     _id = _id
