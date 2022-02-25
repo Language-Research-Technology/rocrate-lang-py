@@ -1,6 +1,7 @@
 test/test-data/*
 !test/test-data/.gitkeep
 !test/test-data/rocrate_test_f2f
-
+!test/test-data/resolve_crate
+!test/test-data/resolve_crate_include
 .idea
 .DS_Store

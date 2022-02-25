@@ -51,9 +51,10 @@ def test_resolve_reverse_farms():
         files = crate_f2f.resolve(interview_json, [
             {'property': "hasFile"}
         ])
-        del interview_json['hasFile']
+
         if files:
             interview_json['files'] = files
+            del interview_json['hasFile']
 
         interviews.append(interview_json)
 
