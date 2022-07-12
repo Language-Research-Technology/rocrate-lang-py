@@ -36,7 +36,7 @@ global interviews
 
 # it can resolve multiple reverse links
 def test_resolve_reverse_farms():
-    interviews_item = crate_f2f.dereference('#interviews')
+    interviews_item = crate_f2f.dereference('arcp://name,farms-to-freeways/collection/interviews')
     interviews_item_json = interviews_item.as_jsonld()
     global interviews
     interviews = []

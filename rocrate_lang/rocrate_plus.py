@@ -1,6 +1,7 @@
 from rocrate.rocrate import ROCrate
-from rocrate.utils import as_list, is_url
+from rocrate.utils import is_url
 from collections import deque
+from rocrate_lang.utils import as_list
 
 
 class ROCratePlus(ROCrate):
@@ -142,8 +143,6 @@ class ROCratePlus(ROCrate):
                     _id = _id
                 elif _id.startswith('#'):
                     _id = _id
-                else:
-                    _id = '#' + _id
                 deref = super().dereference(_id)
                 if deref is not None:
                     return deref.as_jsonld()
