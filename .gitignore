@@ -3,5 +3,6 @@ test/test-data/*
 !test/test-data/rocrate_test_f2f
 !test/test-data/resolve_crate
 !test/test-data/resolve_crate_include
+!test/test-data/farms_to_freeways_test_rocrate
 .idea
 .DS_Store
