@@ -18,7 +18,7 @@ def download_file(url, location, file_name):
 def as_list(list_or_other):
     if list_or_other is None:
         return []
-    if (isinstance(list_or_other, collections.Sequence)
+    if (isinstance(list_or_other, collections.abc.Sequence)
         and not isinstance(list_or_other, str)): # FIXME: bytes?
         return list_or_other
     return [list_or_other]
